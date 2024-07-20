@@ -16,6 +16,7 @@ class User(Base):
 
     id = Column(Integer, autoincrement=True,primary_key=True)
     email = Column(String, unique=True, index=True)
+    name = Column(String)
     no_phone = Column(String, unique=True)
-    hashing_password = Column(String)
-    
+    hashing_password = Column(String, unique=True)
+    address = Column(String, default="Indonesia")
