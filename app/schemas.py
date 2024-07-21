@@ -1,36 +1,26 @@
 from pydantic import BaseModel
 from enum import Enum
 
-class Size_loker(str,Enum):
+class SizeLoker(str, Enum):
     s = "S"
     m = "M"
     l = "L"
     xl = "XL"
-    XXL = "XXL"
+    xxl = "XXL"
 
-class Msg(BaseModel):
-    Msg: str
-
-class MsgCreateUser(Msg):
-    email: str
-    reason: str
-
-class Loker(BaseModel):
-    id:int
+class LokerBase(BaseModel):
     id_loker: str
     nama_loker: str
-    size_loker: Size_loker
+    size_loker: SizeLoker
+
+class LokerCreate(LokerBase):
+    pass
+
+class Loker(LokerBase):
+    id: int
 
     class Config:
         orm_mode = True
 
-
-class UserIn(BaseModel):
-    id: int
-    email: str
-    name: str
-    no_phone: str
-    hashing_password: str
-    address: str | None = None
-
-
+class LokerOut(Loker):
+    pass
