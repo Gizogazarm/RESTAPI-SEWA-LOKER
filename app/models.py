@@ -1,5 +1,5 @@
 from .database import Base
-from sqlalchemy import Column, Integer, String, CHAR
+from sqlalchemy import Column, Integer, String, VARCHAR
 
 
 class Loker(Base):
@@ -8,7 +8,7 @@ class Loker(Base):
     id = Column(Integer,autoincrement=True,primary_key=True)
     id_loker = Column(String, unique=True, index=True)
     nama_loker = Column(String)
-    size_loker = Column(CHAR(3))
+    size_loker = Column(VARCHAR(3))
 
 
 class User(Base):
