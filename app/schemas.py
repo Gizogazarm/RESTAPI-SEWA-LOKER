@@ -13,14 +13,12 @@ class LokerBase(BaseModel):
     nama_loker: str
     size_loker: SizeLoker
 
-class LokerCreate(LokerBase):
-    pass
-
 class Loker(LokerBase):
     id: int
 
     class Config:
         orm_mode = True
 
-class LokerOut(Loker):
-    pass
+class LokerOut(LokerBase):
+    class Config:
+        orm_mode = True
