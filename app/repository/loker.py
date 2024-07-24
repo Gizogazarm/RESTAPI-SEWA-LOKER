@@ -33,3 +33,25 @@ def create_loker(request: schemas.LokerBase, db: Session):
             db.rollback()
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Connection to database error")
     return create_model   
+
+def get_id_loker(db:Session, id_loker:str) -> int:
+    id_int = db.query(model.Loker).filter(model.Loker.id_loker == id_loker).first()
+
+    if not id_int:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{id_loker} tidak ditemukan")
+    
+    return {"id" : id_int.id}
+
+def update_data_by_id (db:Session, id : int, request: schemas.UpdateLoker):
+    data = db.query(model.Loker).filter(model.Loker.id == id).first()
+
+    if not data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Data yang dicari tidak ada")
+
+    data.nama_loker = request.nama_loker
+    data.size_loker = request.size_loker
+
+    db.commit()
+    db.refresh(data)
+
+    return data

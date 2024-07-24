@@ -22,3 +22,7 @@ class Loker(LokerBase):
 class LokerOut(LokerBase):
     class Config:
         orm_mode = True
+
+class UpdateLoker(BaseModel):
+    nama_loker: str
+    size_loker: SizeLoker
