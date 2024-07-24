@@ -31,5 +31,5 @@ def create_loker(request: schemas.LokerBase, db: Session):
             db.refresh(create_model)
         except IntegrityError as e:
             db.rollback()
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"id {request.id_loker} Sudah ada")
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Connection to database error")
     return create_model   
