@@ -34,13 +34,13 @@ def create_loker(request: schemas.LokerBase, db: Session):
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Connection to database error")
     return create_model   
 
-def get_id_loker(db:Session, id_loker:str) -> int:
-    id_int = db.query(model.Loker).filter(model.Loker.id_loker == id_loker).first()
+def get_id_loker(db:Session, id_loker:str) -> dict:
+    loker = db.query(model.Loker).filter(model.Loker.id_loker == id_loker).first()
 
-    if not id_int:
+    if not loker:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{id_loker} tidak ditemukan")
     
-    return {"id" : id_int.id}
+    return {"id" : loker.id}
 
 def update_data_by_id (db:Session, id : int, request: schemas.UpdateLoker):
     data = db.query(model.Loker).filter(model.Loker.id == id).first()
