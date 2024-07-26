@@ -12,6 +12,7 @@ class LokerBase(BaseModel):
     id_loker: str
     nama_loker: str
     size_loker: SizeLoker
+    harga_sewa: float
 
 class Loker(LokerBase):
     id: int
@@ -26,3 +27,7 @@ class LokerOut(LokerBase):
 class UpdateLoker(BaseModel):
     nama_loker: str
     size_loker: SizeLoker
+    harga_sewa: float
+
+class Hashing_id(BaseModel):
+    hashing_id: str

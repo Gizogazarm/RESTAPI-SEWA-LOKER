@@ -3,6 +3,7 @@ from fastapi import HTTPException, status
 from app import models as model
 from app import schemas
 from sqlalchemy.exc import IntegrityError
+from app import hashing 
 
 
 
@@ -25,7 +26,7 @@ def create_loker(request: schemas.LokerBase, db: Session):
             )
     else:
         try:
-            create_model = model.Loker(**request.model_dump())
+            create_model = model.Loker(**request.model_dump(), hashing_id = hashing.get_hash(request.id_loker))
             db.add(create_model)
             db.commit()
             db.refresh(create_model)
