@@ -4,6 +4,7 @@ from app import models as model
 from app import schemas
 from sqlalchemy.exc import IntegrityError
 from app import hashing 
+from fastapi.encoders import jsonable_encoder
 
 
 
@@ -26,7 +27,7 @@ def create_loker(request: schemas.LokerBase, db: Session):
             )
     else:
         try:
-            create_model = model.Loker(**request.model_dump(), hashing_id = hashing.get_hash(request.id_loker))
+            create_model = model.Loker(**request.model_dump())
             db.add(create_model)
             db.commit()
             db.refresh(create_model)
@@ -41,7 +42,9 @@ def get_id_loker(db:Session, id_loker:str) -> dict:
     if not loker:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{id_loker} tidak ditemukan")
     
-    return {"id" : loker.id}
+    convert_dict = jsonable_encoder(loker)
+    
+    return convert_dict
 
 def update_data_by_id (db:Session, id : int, request: schemas.UpdateLoker):
     data = db.query(model.Loker).filter(model.Loker.id == id).first()
@@ -56,3 +59,32 @@ def update_data_by_id (db:Session, id : int, request: schemas.UpdateLoker):
     db.refresh(data)
 
     return data
+
+def validate_id_hashing(db:Session, id: str) -> bool:
+    data = db.query(model.Id_hashing).filter(model.Id_hashing.id_loker == id).first()
+    if data:
+        return True
+    else: 
+        return False
+
+
+def create_idHashing(db:Session, id_loker: str):
+    data = db.query(model.Loker).filter(model.Loker.id_loker == id_loker).first()
+
+    if not data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{id_loker} tidak ditemukan")
+    
+    convert_str = str(data.id)
+
+    validate_id = validate_id_hashing(db,convert_str)
+    if validate_id:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"{id_loker} sudah dibuat ")
+
+    create_model = model.Id_hashing(id_loker=convert_str, hashing_id = hashing.get_hash(convert_str))
+    db.add(create_model)
+    db.commit()
+    db.refresh(create_model)
+    return create_model
+
+
+

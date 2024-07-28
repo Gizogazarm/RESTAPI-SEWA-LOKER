@@ -19,7 +19,7 @@ async def get_loker(db: Session = Depends(get_db)):
 async def create_loker(request: schemas.LokerBase, db: Session = Depends(get_db)):
     return loker.create_loker(request, db)
 
-@router.get('/{id_loker}')
+@router.get('/{id_loker}',response_model=schemas.LokerOut)
 async def get_id(id_loker:str, db: Session = Depends(get_db)):
     """
     Note :
@@ -32,3 +32,7 @@ async def get_id(id_loker:str, db: Session = Depends(get_db)):
 @router.put('/update', response_model=schemas.LokerOut)
 async def update_loker(id:int, request: schemas.UpdateLoker, db: Session = Depends(get_db)):
     return loker.update_data_by_id(db,id,request)
+
+@router.post('/{id_loker}', response_model=schemas.Hashing_id)
+async def create_hashing(id_loker: str, db: Session = Depends(get_db)):
+    return loker.create_idHashing(db,id_loker)

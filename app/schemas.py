@@ -31,3 +31,6 @@ class UpdateLoker(BaseModel):
 
 class Hashing_id(BaseModel):
     hashing_id: str
+
+    class Config:
+        orm_mode = True
