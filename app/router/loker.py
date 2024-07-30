@@ -12,26 +12,38 @@ get_db = database.get_db
 
 @router.get('/', response_model=List[schemas.LokerOut], tags=["loker"])
 async def get_loker(db: Session = Depends(get_db)):
+    """
+    Mendapatkan data loker keseluruhan
+    """
     return loker.get_loker(db)
 
 @router.post('/', response_model=schemas.LokerOut, tags=["loker"])
 async def create_loker(request: schemas.LokerBase, db: Session = Depends(get_db)):
+    """
+    Membuat data loker baru 
+    """
     return loker.create_loker(request, db)
 
 @router.get('/{id_loker}',response_model=schemas.LokerOut, tags=["hashing loker"])
 async def get_hashing_id(id_loker:str, db: Session = Depends(get_db)):
     """
-    Note :
-    - Untuk mengupdate data,  terlebih dahulu untuk mencari Id_Loker
-    - Tidak disarankan untuk ditampilkan di interface hanya di program saja
-
+    Mencari Hashing ID yang sudah dibuat
     """
     return loker.get_id_loker(db,id_loker)
 
 @router.put('/update', response_model=schemas.LokerOut,tags=["loker"])
 async def update_loker(hashing_id: str, request: schemas.UpdateLoker, db: Session = Depends(get_db)):
+    """
+    Note :
+    - Untuk mengupdate data, terlebih dahulu untuk mencari Hashing_id
+    - Caranya dengan API Create Hashing (Jika Belum ada), jika sudah ada dengan Get Hashing ID
+
+    """
     return loker.update_data_by_id(db,hashing_id,request)
 
 @router.post('/{id_loker}', response_model=schemas.Hashing_id,tags=["hashing loker"])
 async def create_hashing(id_loker: str, db: Session = Depends(get_db)):
+    """
+    - Buat Create Hashing disini (Jika belum , Kalau sudah maka cari di Get Hashing ID)
+    """
     return loker.create_idHashing(db,id_loker)
