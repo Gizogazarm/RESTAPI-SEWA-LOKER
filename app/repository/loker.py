@@ -4,7 +4,6 @@ from app import models as model
 from app import schemas
 from sqlalchemy.exc import IntegrityError
 from app import hashing 
-from fastapi.encoders import jsonable_encoder
 
 
 
@@ -41,24 +40,31 @@ def get_id_loker(db:Session, id_loker:str) -> dict:
 
     if not loker:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{id_loker} tidak ditemukan")
-    
-    convert_dict = jsonable_encoder(loker)
-    
-    return convert_dict
 
-def update_data_by_id (db:Session, id : int, request: schemas.UpdateLoker):
-    data = db.query(model.Loker).filter(model.Loker.id == id).first()
+    
+    return loker
+
+def update_data_by_id (db:Session, hashing_id: str, request: schemas.UpdateLoker):
+    data = db.query(model.Id_hashing).filter(model.Id_hashing.hashing_id == hashing_id).first()
 
     if not data:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Data yang dicari tidak ada")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Data yang mau diupdate tidak ditemukan")
+     
+    id_str = str(data.id_loker)
+    status_hash = hashing.verify_hash(id_str,hashing_id)
+    if not status_hash:
+         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Data Hashing tidak ditemukan")
 
-    data.nama_loker = request.nama_loker
-    data.size_loker = request.size_loker
+    data_db = db.query(model.Loker).filter(model.Loker.id == data.id_loker).first()
+
+    data_db.nama_loker = request.nama_loker
+    data_db.size_loker = request.size_loker
+    data_db.harga_sewa = request.harga_sewa
 
     db.commit()
-    db.refresh(data)
+    db.refresh(data_db)
 
-    return data
+    return data_db
 
 def validate_id_hashing(db:Session, id: str) -> bool:
     data = db.query(model.Id_hashing).filter(model.Id_hashing.id_loker == id).first()
@@ -86,5 +92,7 @@ def create_idHashing(db:Session, id_loker: str):
     db.refresh(create_model)
     return create_model
 
-
+# BUAT VERIFYKASI ID HASHING DENGAN HASH YANG SUDAH DIDAPAT DI VERIFIKASI DENGAN ID LOKER (BUKAN SEBALIKNYA)
+# HAPUS DEF GET ID DENGAN GET ID UNTUK HASHING 
+# UPDATE ID LOKER DENGAN MENGGUNAKAN ID HASHING YANG SUDAH DIDAPAT
 

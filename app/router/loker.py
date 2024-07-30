@@ -5,22 +5,21 @@ from typing import List
 from app.repository import loker
 
 router = APIRouter(
-    tags=['loker'],
     prefix="/loker"
 )
 
 get_db = database.get_db
 
-@router.get('/', response_model=List[schemas.LokerOut])
+@router.get('/', response_model=List[schemas.LokerOut], tags=["loker"])
 async def get_loker(db: Session = Depends(get_db)):
     return loker.get_loker(db)
 
-@router.post('/', response_model=schemas.LokerOut)
+@router.post('/', response_model=schemas.LokerOut, tags=["loker"])
 async def create_loker(request: schemas.LokerBase, db: Session = Depends(get_db)):
     return loker.create_loker(request, db)
 
-@router.get('/{id_loker}',response_model=schemas.LokerOut)
-async def get_id(id_loker:str, db: Session = Depends(get_db)):
+@router.get('/{id_loker}',response_model=schemas.LokerOut, tags=["hashing loker"])
+async def get_hashing_id(id_loker:str, db: Session = Depends(get_db)):
     """
     Note :
     - Untuk mengupdate data,  terlebih dahulu untuk mencari Id_Loker
@@ -29,10 +28,10 @@ async def get_id(id_loker:str, db: Session = Depends(get_db)):
     """
     return loker.get_id_loker(db,id_loker)
 
-@router.put('/update', response_model=schemas.LokerOut)
-async def update_loker(id:int, request: schemas.UpdateLoker, db: Session = Depends(get_db)):
-    return loker.update_data_by_id(db,id,request)
+@router.put('/update', response_model=schemas.LokerOut,tags=["loker"])
+async def update_loker(hashing_id: str, request: schemas.UpdateLoker, db: Session = Depends(get_db)):
+    return loker.update_data_by_id(db,hashing_id,request)
 
-@router.post('/{id_loker}', response_model=schemas.Hashing_id)
+@router.post('/{id_loker}', response_model=schemas.Hashing_id,tags=["hashing loker"])
 async def create_hashing(id_loker: str, db: Session = Depends(get_db)):
     return loker.create_idHashing(db,id_loker)
