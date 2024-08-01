@@ -35,14 +35,17 @@ def create_loker(request: schemas.LokerBase, db: Session):
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Connection to database error")
     return create_model   
 
-def get_id_loker(db:Session, id_loker:str) -> dict:
+def get_id_loker(db:Session, id_loker:str):  
     loker = db.query(model.Loker).filter(model.Loker.id_loker == id_loker).first()
 
     if not loker:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{id_loker} tidak ditemukan")
-
     
-    return loker
+    hashing_query = db.query(model.Id_hashing).filter(model.Id_hashing.id_loker == loker.id).first()
+    if not hashing_query:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"hashing ID {id_loker} belum dibuat")
+    
+    return {"hashing_id" : hashing_query.hashing_id}
 
 def update_data_by_id (db:Session, hashing_id: str, request: schemas.UpdateLoker):
     data = db.query(model.Id_hashing).filter(model.Id_hashing.hashing_id == hashing_id).first()
@@ -92,7 +95,4 @@ def create_idHashing(db:Session, id_loker: str):
     db.refresh(create_model)
     return create_model
 
-# BUAT VERIFYKASI ID HASHING DENGAN HASH YANG SUDAH DIDAPAT DI VERIFIKASI DENGAN ID LOKER (BUKAN SEBALIKNYA)
-# HAPUS DEF GET ID DENGAN GET ID UNTUK HASHING 
-# UPDATE ID LOKER DENGAN MENGGUNAKAN ID HASHING YANG SUDAH DIDAPAT
 
