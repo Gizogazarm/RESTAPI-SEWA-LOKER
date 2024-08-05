@@ -1,5 +1,7 @@
 from pydantic import BaseModel
+from fastapi import Form
 from enum import Enum
+from typing import Annotated
 
 class SizeLoker(str, Enum):
     s = "S"
@@ -34,3 +36,18 @@ class Hashing_id(BaseModel):
 
     class Config:
         orm_mode = True
+
+class LoginUser(BaseModel):
+    email: Annotated[str,Form()]
+    password: Annotated[str,Form()]
+
+class InputUser(LoginUser):
+    id: Annotated[str,Form()]
+    name: Annotated[str,Form()]
+    no_phone: Annotated[str, Form()]
+    hashing_password: Annotated[str,Form()]
+    address: Annotated[str | None , Form()] = None
+
+    class Config:
+        orm_mode = True
+
