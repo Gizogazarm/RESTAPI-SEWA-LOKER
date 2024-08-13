@@ -10,6 +10,10 @@ class SizeLoker(str, Enum):
     xl = "XL"
     xxl = "XXL"
 
+class MsgCreate(str,Enum):
+    msgSuccess = "Akun Berhasil dibuat"
+    msgFailed = "Akun tidak berhasil dibuat"
+
 class LokerBase(BaseModel):
     id_loker: str
     nama_loker: str
@@ -42,12 +46,14 @@ class LoginUser(BaseModel):
     password: Annotated[str,Form()]
 
 class InputUser(LoginUser):
-    id: Annotated[str,Form()]
     name: Annotated[str,Form()]
     no_phone: Annotated[str, Form()]
-    hashing_password: Annotated[str,Form()]
+    password: Annotated[str,Form()]
     address: Annotated[str | None , Form()] = None
 
     class Config:
         orm_mode = True
 
+class msgCreateUser(BaseModel):
+    msg: MsgCreate
+    email:str

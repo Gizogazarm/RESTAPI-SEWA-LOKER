@@ -51,7 +51,7 @@ def update_data_by_id (db:Session, hashing_id: str, request: schemas.UpdateLoker
     data = db.query(model.Id_hashing).filter(model.Id_hashing.hashing_id == hashing_id).first()
 
     if not data:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Data yang mau diupdate tidak ditemukan")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="ID Loker tidak ditemukan")
      
     id_str = str(data.id_loker)
     status_hash = hashing.verify_hash(id_str,hashing_id)
