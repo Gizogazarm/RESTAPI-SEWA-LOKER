@@ -15,7 +15,7 @@ class Loker(Base):
     id_hash = relationship("Id_hashing", back_populates="hash")
 
 class User(Base):
-    __tablename__="userLoker"
+    __tablename__="user_loker"
 
     id = Column(Integer, autoincrement=True,primary_key=True)
     email = Column(String, unique=True, index=True)

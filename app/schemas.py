@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from fastapi import Form
 from enum import Enum
 from typing import Annotated
@@ -42,7 +42,7 @@ class Hashing_id(BaseModel):
         orm_mode = True
 
 class LoginUser(BaseModel):
-    email: Annotated[str,Form()]
+    email: Annotated[EmailStr,Form()]
     password: Annotated[str,Form()]
 
 class InputUser(LoginUser):
@@ -56,4 +56,4 @@ class InputUser(LoginUser):
 
 class msgCreateUser(BaseModel):
     msg: MsgCreate
-    email:str
+    email:EmailStr

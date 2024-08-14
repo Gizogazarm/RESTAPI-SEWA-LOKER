@@ -10,6 +10,6 @@ router = APIRouter (
 get_db = database.get_db
 
 # Membuat Router untuk create login 
-@router.post('/',tags=['Input User'], response_model=schemas.msgCreateUser)
+@router.post('/',tags=['Create User'], response_model=schemas.msgCreateUser)
 async def input_User(request: schemas.InputUser , db: session = Depends(get_db)):
     return user.input_user(db,request)
