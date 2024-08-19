@@ -10,9 +10,11 @@ class SizeLoker(str, Enum):
     xl = "XL"
     xxl = "XXL"
 
-class MsgCreate(str,Enum):
-    msgSuccess = "Akun Berhasil dibuat"
-    msgFailed = "Akun tidak berhasil dibuat"
+class NotifMessage(str,Enum):
+    msgSuccessCreate = "Akun Berhasil dibuat"
+    msgFailedCreate = "Akun Tidak Berhasil dibuat"
+    msgSuccessLogin = "Akun Berhasil Login"
+    msgFailedLogin = "Akun Tidak Berhasil Login"
 
 class LokerBase(BaseModel):
     id_loker: str
@@ -54,6 +56,10 @@ class InputUser(LoginUser):
     class Config:
         orm_mode = True
 
-class msgCreateUser(BaseModel):
-    msg: MsgCreate
+class MsgCreateUser(BaseModel):
+    msg: NotifMessage
     email:EmailStr
+
+class MsgLoginUser(BaseModel):
+    msg: NotifMessage
+    email: EmailStr
