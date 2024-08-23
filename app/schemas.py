@@ -15,6 +15,8 @@ class NotifMessage(str,Enum):
     msgFailedCreate = "Akun Tidak Berhasil dibuat"
     msgSuccessLogin = "Akun Berhasil Login"
     msgFailedLogin = "Akun Tidak Berhasil Login"
+    msgPasswordSame = "Mohon ganti password yang baru"
+    msgPasswordChange = "Password berhasil diganti"
 
 class LokerBase(BaseModel):
     id_loker: str
@@ -56,10 +58,6 @@ class InputUser(LoginUser):
     class Config:
         orm_mode = True
 
-class MsgCreateUser(BaseModel):
+class MsgForUser(BaseModel):
     msg: NotifMessage
     email:EmailStr
-
-class MsgLoginUser(BaseModel):
-    msg: NotifMessage
-    email: EmailStr

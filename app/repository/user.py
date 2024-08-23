@@ -17,7 +17,7 @@ def input_user(db: Session, request: schemas.InputUser):
     db.commit()
     db.refresh(models)
 
-    return schemas.MsgCreateUser(
+    return schemas.MsgForUser(
         **request.model_dump(), msg=Notification.msgSuccessCreate
     )
 
@@ -42,7 +42,29 @@ def authentication(db:Session, request: schemas.LoginUser):
     if not hashing.verify_hash(request.password,query_src.hashing_password):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Password Salah")
     
-    return schemas.MsgLoginUser(
+    return schemas.MsgForUser(
         **request.model_dump(), msg=Notification.msgSuccessLogin
     )
+
 # membuat update dengan lupa password sehingga mengupdate hashing yang lama 
+def update_password(db: Session, request: schemas.LoginUser):
+    email_src = db.query(model.User).filter(model.User.email == request.email).first()
+
+    if not email_src:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"email {request.email} tidak ditemukan")
+    
+    verify_pasw = hashing.verify_hash(request.password,email_src.hashing_password)
+
+    if verify_pasw:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,detail=schemas.MsgForUser(
+            msg=Notification.msgPasswordSame,
+            **request.model_dump()
+        ).model_dump())
+    
+    email_src.hashing_password = hashing.get_hash(request.password)
+    db.commit()
+    db.refresh(email_src)
+
+    return schemas.MsgForUser(
+        msg= Notification.msgPasswordChange, **request.model_dump()
+    )
