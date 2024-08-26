@@ -17,6 +17,10 @@ class NotifMessage(str,Enum):
     msgFailedLogin = "Akun Tidak Berhasil Login"
     msgPasswordSame = "Mohon ganti password yang baru"
     msgPasswordChange = "Password berhasil diganti"
+    msgEmailNotFound = "Email belum terdaftar"
+    msgEmailHasBeenRegistered = "Email sudah terdaftar"
+    msgHandphoneHasBeenRegistered = "Nomer Handphone sudah terdaftar"
+    msgWrongPassword = "Mohon masukan password yang benar"
 
 class LokerBase(BaseModel):
     id_loker: str
@@ -61,3 +65,6 @@ class InputUser(LoginUser):
 class MsgForUser(BaseModel):
     msg: NotifMessage
     email:EmailStr
+    
+class MsgForUserHp(MsgForUser):
+    no_handphone: Annotated[str , None] = None
