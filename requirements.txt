@@ -4,3 +4,4 @@ pydantic
 psycopg2
 passlib[bcrypt]
 email-validator
+secrets

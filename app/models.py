@@ -24,6 +24,8 @@ class User(Base):
     hashing_password = Column(String)
     address = Column(String, default="Indonesia")
 
+    token = relationship("Token_password", back_populates="user_email")
+
 class Id_hashing(Base):
     __tablename__="id_hashing"
 
@@ -32,5 +34,16 @@ class Id_hashing(Base):
     hashing_id = Column(String)
 
     hash = relationship("Loker", back_populates="id_hash")
+
+class Token_password(Base):
+    __tablename__="token_password"
+
+    email = Column(String,ForeignKey(User.email), unique=True, primary_key=True)
+    hashing_token = Column(String)
+    start_time = Column(Integer)
+
+    user_email = relationship("User",back_populates="token")
+
+
 
    

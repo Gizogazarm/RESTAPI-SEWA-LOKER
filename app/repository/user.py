@@ -5,6 +5,7 @@ from app import models as model
 from app import schemas
 from app import hashing
 from pydantic import EmailStr
+from app import code_generator 
 from app.schemas import NotifMessage as Notification
 
 # Input User
@@ -57,7 +58,7 @@ def authentication(db:Session, request: schemas.LoginUser):
         **request.model_dump(), msg=Notification.msgSuccessLogin
     )
 
-# membuat update password dengan mengganti password yang lama 
+# membuat update password dengan mengganti password yang lama (setelah login)
 def update_password(db: Session, request: schemas.LoginUser):
 
     email_src = validate_email(db, request.email)
@@ -89,6 +90,36 @@ def validate_email(db:Session,email: EmailStr):
     
     return email_src
 
+# update lupa password dengan mendapatkan kode generator 
+def token_forgetPassword(db: Session, request: schemas.EmailUser):
+
+    user = validate_email(db, request.email)
+
+    email_token = db.query(model.Token_password).filter(model.Token_password.email == request.email).first()
+
+    if not email_token:
+        data = code_generator.create_token(request.email)
+        model_data = model.Token_password( email=data["email"], 
+                                          hashing_token=data["hash_token"], 
+                                          start_time=data["time"])
+
+        db.add(model_data)
+        db.commit()
+        db.refresh(model_data)
+        return schemas.MsgForCreateToken(msg=Notification.msgTokenCreate
+                                         ,email=request.email,
+                                         token=data["token"]
+                                         )
+    
+    else:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                            detail=schemas.MsgForUser(
+                                msg=schemas.NotifMessage.msgTokenWasExist,
+                                email=request.email
+                            ).model_dump()
+                            )
+
+
 """
 1. update schemas error pada user agar bisa menampilkan detail problem yang sama dengan schemas.ModelForUser
    satu konsep , contoh : 
@@ -102,5 +133,7 @@ def validate_email(db:Session,email: EmailStr):
 3. update fitur untuk lupa password sehingga fitur yang digunakan adalah :
    - hanya input user email saja dan mendapatkan kode untuk input sebagai query nomer kode generator
    - jadi request yang dipakai adalah parent schemas dari login user dan memuat input kode generator untuk wajib
+
+4. update login untuk mendapatkan JWT TOKEN
 """
  

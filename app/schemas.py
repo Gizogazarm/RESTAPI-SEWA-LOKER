@@ -13,6 +13,7 @@ class SizeLoker(str, Enum):
 class NotifMessage(str,Enum):
     msgSuccessCreate = "Akun Berhasil dibuat"
     msgFailedCreate = "Akun Tidak Berhasil dibuat"
+    msgTokenCreate = "Token berhasil dibuat"
     msgSuccessLogin = "Akun Berhasil Login"
     msgFailedLogin = "Akun Tidak Berhasil Login"
     msgPasswordSame = "Mohon ganti password yang baru"
@@ -21,6 +22,9 @@ class NotifMessage(str,Enum):
     msgEmailHasBeenRegistered = "Email sudah terdaftar"
     msgHandphoneHasBeenRegistered = "Nomer Handphone sudah terdaftar"
     msgWrongPassword = "Mohon masukan password yang benar"
+    msgTokenWasExist = "Token sudah ada , mohon input terlebih dahulu"
+    msgWrongToken = "Token yang anda input salah"
+    msgTokenExpired = "Masa waktu token sudah habis , mohon buat baru "
 
 class LokerBase(BaseModel):
     id_loker: str
@@ -49,8 +53,10 @@ class Hashing_id(BaseModel):
     class Config:
         orm_mode = True
 
-class LoginUser(BaseModel):
+class EmailUser(BaseModel):
     email: Annotated[EmailStr,Form()]
+
+class LoginUser(EmailUser):
     password: Annotated[str,Form()]
 
 class InputUser(LoginUser):
@@ -68,3 +74,6 @@ class MsgForUser(BaseModel):
     
 class MsgForUserHp(MsgForUser):
     no_handphone: Annotated[str , None] = None
+
+class MsgForCreateToken(MsgForUser):
+    token:str
