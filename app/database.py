@@ -17,3 +17,14 @@ def get_db():
    finally:
        db.close()
 
+# Langkah pertama 
+# 1. Buat koneksi database.py ( instance database alchemy ) 
+# 2. Buat model database seperti tabel , relasi di models.py
+# 3. Buat schema untuk validasi data di schemas.py
+# 4. Buat api router di router.py seperti loker.py dan user.py
+# 5. Buat repository untuk CRUD di repository seperti loker_function.py dan user_function.py (post , put , delete , update)
+# 6. Buat main.py untuk menjalankan aplikasi fastapi
+# 7. Buat hashing untuk password di hashing.py
+# 8. Buat notifikasi untuk pesan di schemas.py
+
+
